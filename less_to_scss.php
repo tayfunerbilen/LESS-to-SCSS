@@ -1,38 +1,46 @@
 <?php
 
 /**
- * .less dosyasını scss kurallarına uygun olarak .scss dosyasına çevirir.
- *
- * @param $file
- * @return mixed
+ * less kodlarını scss kodlarına dönüştürür.
+ * 
+ * Class Convert
  */
-function less_to_scss( $file ){
+class Convert {
 
-    // değiştirilmeyecek değişken karalistesi
-    $blacklist = array(
+    /**
+     * @var array
+     */
+    public static $blacklist = array(
         '@import',
         '@charsert'
     );
 
-    // değişkenleri değiştir
-    $file = preg_replace_callback('/@([0-9a-zA-Z-_]+)/', function($m){
-        global $blacklist;
-        if ( !in_array($m[0], $blacklist) ){
-            $variable = str_replace('@', null, $m[0]);
-            return '$' . $variable;
-        }
-        return $m[0];
-    }, $file);
+    /**
+     * @param $less_source
+     * @return mixed
+     */
+    public static function less_to_css($less_source){
 
-    // tırnak içindeki değişkenleri değiştir
-    $file = preg_replace('/("|\')\$([0-9a-zA-Z-_]+)("|\')/', '$1#{\$$2}$3', $file);
+        // değişkenleri değiştir
+        $less_source = preg_replace_callback('/@([0-9a-zA-Z-_]+)/', function($m){
+            if ( !in_array($m[0], self::$blacklist) ){
+                $variable = str_replace('@', null, $m[0]);
+                return '$' . $variable;
+            }
+            return $m[0];
+        }, $less_source);
 
-    // mixin oluşturucuları değiştir
-    $file = preg_replace('/\.([0-9a-zA-Z-_]+)\s+\(/', '@mixin $1(', $file);
+        // tırnak içindeki değişkenleri değiştir
+        $less_source = preg_replace('/("|\')\$([0-9a-zA-Z-_]+)("|\')/', '$1#{\$$2}$3', $less_source);
 
-    // kullanılan mixinleri değiştir
-    $file = preg_replace('/\.([0-9a-zA-Z-_]+)\(/', '@include $1(', $file);
+        // mixin oluşturucuları değiştir
+        $less_source = preg_replace('/\.([0-9a-zA-Z-_]+)\s+\(/', '@mixin $1(', $less_source);
 
-    return $file;
+        // kullanılan mixinleri değiştir
+        $less_source = preg_replace('/\.([0-9a-zA-Z-_]+)\(/', '@include $1(', $less_source);
+
+        return $less_source;
+
+    }
 
 }
