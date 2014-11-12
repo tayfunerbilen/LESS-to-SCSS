@@ -19,7 +19,7 @@ class Convert {
      * @param $less_source
      * @return mixed
      */
-    public static function less_to_css($less_source){
+    public static function less_to_scss($less_source){
 
         // değişkenleri değiştir
         $less_source = preg_replace_callback('/@([0-9a-zA-Z-_]+)/', function($m){
