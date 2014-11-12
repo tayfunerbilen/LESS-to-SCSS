@@ -1,8 +1,12 @@
 <?php
 
+function blacklist(){
+	return Convert::$blacklist;
+}
+
 /**
  * less kodlarını scss kodlarına dönüştürür.
- * 
+ *
  * Class Convert
  */
 class Convert {
@@ -23,7 +27,7 @@ class Convert {
 
         // değişkenleri değiştir
         $less_source = preg_replace_callback('/@([0-9a-zA-Z-_]+)/', function($m){
-            if ( !in_array($m[0], self::$blacklist) ){
+            if ( !in_array($m[0], blacklist()) ){
                 $variable = str_replace('@', null, $m[0]);
                 return '$' . $variable;
             }
@@ -32,12 +36,12 @@ class Convert {
 
         // tırnak içindeki değişkenleri değiştir
         $less_source = preg_replace('/("|\')\$([0-9a-zA-Z-_]+)("|\')/', '$1#{\$$2}$3', $less_source);
+		
+        // kullanılan mixinleri değiştir
+        $less_source = preg_replace('/\.([0-9a-zA-Z-_]+)\((.*?)\);/', '@include $1($2);', $less_source);
 
         // mixin oluşturucuları değiştir
-        $less_source = preg_replace('/\.([0-9a-zA-Z-_]+)\s+\(/', '@mixin $1(', $less_source);
-
-        // kullanılan mixinleri değiştir
-        $less_source = preg_replace('/\.([0-9a-zA-Z-_]+)\(/', '@include $1(', $less_source);
+        $less_source = preg_replace('/\.([0-9a-zA-Z-_]+)\s?\(/', '@mixin $1(', $less_source);
 
         return $less_source;
 
