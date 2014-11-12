@@ -1,3 +1,5 @@
+<?php
+
 /**
  * .less dosyasını scss kurallarına uygun olarak .scss dosyasına çevirir.
  *
