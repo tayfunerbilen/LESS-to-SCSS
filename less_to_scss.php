@@ -16,7 +16,7 @@ class Convert {
      */
     public static $blacklist = array(
         '@import',
-        '@charsert'
+        '@charset'
     );
 
     /**
